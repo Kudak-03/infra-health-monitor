@@ -51,4 +51,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/infra-health-monitor:${{ github.sha }}
+          tags: ghcr.io/kudak-03/infra-health-monitor:${{ github.sha }}
