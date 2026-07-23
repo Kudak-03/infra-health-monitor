@@ -70,3 +70,28 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/kudak-03/infra-health-monitor:${{ github.sha }}
+
+  update-gitops:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: Kudak-03/infra-health-gitops
+          token: ${{ secrets.GITOPS_PAT_01 }}
+          path: gitops
+
+      - name: Update image tag
+        run: |
+          sed -i "s|image: ghcr.io/kudak-03/infra-health-monitor:.*|image: ghcr.io/kudak-03/infra-health-monitor:${{ github.sha }}|" gitops/deployment.yaml
+          cat gitops/deployment.yaml
+
+      - name: Commit and push
+        run: |
+          cd gitops
+          git config user.name "github-actions-bot"
+          git config user.email "actions@github.com"
+          git add deployment.yaml
+          git commit -m "Update image to ${{ github.sha }}" || echo "No changes to commit"
+          git push
