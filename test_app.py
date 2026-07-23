@@ -16,7 +16,7 @@ def test_servers_returns_list(client):
     response = client.get('/servers')
     assert response.status_code == 200
     data = response.get_json()
-    assert len(data) == 3
+    assert len(data) == 99
 
 def test_server_not_found_returns_404(client):
     response = client.get('/servers/99')
